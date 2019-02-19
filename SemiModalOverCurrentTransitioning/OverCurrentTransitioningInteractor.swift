@@ -15,7 +15,17 @@ class OverCurrentTransitioningInteractor: UIPercentDrivenInteractiveTransition {
     var startHandler: (() -> Void)?
 
     var resetHandler: (() -> Void)?
-
+    
+    override func cancel() {
+        completionSpeed = percentComplete
+        super.cancel()
+    }
+    
+    override func finish() {
+        completionSpeed = 1.0 - percentComplete
+        super.finish()
+    }
+    
     func setStartInteractionTranslationY(_ translationY: CGFloat) {
         switch state {
         case .shouldStart:
