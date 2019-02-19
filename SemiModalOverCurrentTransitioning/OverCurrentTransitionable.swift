@@ -6,9 +6,14 @@ protocol OverCurrentTransitionable where Self: UIViewController {
 }
 
 extension OverCurrentTransitionable {
+    var shouldFinishVerocityY: CGFloat {
+        return 1200
+    }
+}
+
+extension OverCurrentTransitionable {
     func handleTransitionGesture(_ sender: UIPanGestureRecognizer) {
 
-        ///
         switch interactor.state {
         case .shouldStart:
             interactor.state = .hasStarted
@@ -27,7 +32,11 @@ extension OverCurrentTransitionable {
 
         switch sender.state {
         case .changed:
-            interactor.state = progress > percentThreshold ? .shouldFinish : .hasStarted
+            if progress > percentThreshold || sender.velocity(in: view).y > shouldFinishVerocityY {
+                interactor.state =  .shouldFinish
+            } else {
+                interactor.state =  .hasStarted
+            }
             interactor.update(progress)
         case .cancelled:
             interactor.cancel()
